@@ -1,0 +1,38 @@
+target("utils_logging")
+    set_kind("headeronly")
+    add_headerfiles("logging.hpp")
+    add_packages("spdlog", {public = true})
+    add_defines("SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE", {public = true})
+target_end()
+
+target("utils_exec_on_exit")
+    set_kind("headeronly")
+    add_headerfiles("exec_on_exit.hpp")
+target_end()
+
+target("utils_chrono_inspector")
+    set_kind("headeronly")
+    add_headerfiles("chrono_inspector.hpp")
+    add_deps("utils_logging")
+target_end()
+
+target("utils_aligned_allocator")
+    set_kind("headeronly")
+    add_headerfiles("aligned_allocator.hpp")
+target_end()
+
+target("utils_aligned_memory_resource")
+    set_kind("headeronly")
+    add_headerfiles("aligned_memory_resource.hpp")
+target_end()
+
+target("utils_type_traits")
+    set_kind("headeronly")
+    add_headerfiles("type_traits.hpp")
+target_end()
+
+target("utils_concepts")
+    set_kind("headeronly")
+    add_headerfiles("concepts.hpp")
+    add_deps("utils_type_traits")
+target_end()
