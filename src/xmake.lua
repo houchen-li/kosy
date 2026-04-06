@@ -1,0 +1,1 @@
+includes("kosy/xmake.lua")

@@ -1,0 +1,30 @@
+target("test_polynomial")
+    add_rules("kosy.cxx.test")
+    add_includedirs("../../src")
+    add_files("test_polynomial.cpp")
+    add_deps("polynomial")
+    add_packages("openmp")
+target_end()
+
+if is_config("kosy_use_cuda", true) then
+    target("test_vecadd")
+        add_rules("kosy.cxx.test")
+        add_includedirs("../../src")
+        add_files("test_vecadd.cpp")
+        add_deps("utils_aligned_memory_resource", "vecadd")
+    target_end()
+
+    target("test_matmul")
+        add_rules("kosy.cxx.test")
+        add_includedirs("../../src")
+        add_files("test_matmul.cpp")
+        add_deps("utils_aligned_memory_resource", "matmul")
+    target_end()
+end
+
+target("test_logging")
+    add_rules("kosy.cxx.test")
+    add_includedirs("../../src")
+    add_files("test_logging.cpp")
+    add_deps("utils_logging")
+target_end()

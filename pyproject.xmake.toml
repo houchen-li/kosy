@@ -1,0 +1,136 @@
+# Alternate pyproject.toml using xmake (via the xmake-python PEP 517 backend,
+# https://pypi.org/project/xmake-python/) instead of scikit-build-core/CMake.
+#
+# pyproject.toml is the active config: a symlink to pyproject.cmake.toml
+# (scikit-build-core/CMake is the default build backend). To build with xmake
+# instead, re-point the symlink (`cp` would write through it and overwrite
+# pyproject.cmake.toml):
+#
+#   ln -sf pyproject.xmake.toml pyproject.toml
+#   uv venv --system-site-packages
+#   uv sync --no-install-project
+#
+# The [project]/[dependency-groups]/[tool.uv]/[tool.pytest]/[tool.ruff]/
+# [tool.pyright]/[tool.ty] sections below are kept identical to pyproject.toml;
+# keep them in sync by hand if either file's shared sections change.
+
+[project]
+name = "kosy"
+version = "0.1.0"
+description = "A Collection of Interesting Math Problems for Interview Preparation."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Houchen Li", email = "houchen_li@hotmail.com" }]
+keywords = [
+  "math",
+  "interview",
+  "cuda",
+  "algorithms",
+]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Intended Audience :: Education",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: C++",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+  "cython",
+  "loguru",
+  "matplotlib",
+  "numba",
+  "numpy",
+  "pyqt6",
+  "scipy",
+]
+
+[project.urls]
+Homepage = "https://github.com/houchen-li/kosy"
+Repository = "https://github.com/houchen-li/kosy"
+Issues = "https://github.com/houchen-li/kosy/issues"
+
+[dependency-groups]
+dev = [
+  "nanobind",
+  "pyright",
+  "pytest",
+  "ruff",
+  "ty",
+]
+
+[build-system]
+requires = ["xmake-python"]
+build-backend = "xmake_python"
+
+[tool.xmake.module]
+name = "kosy"
+
+[tool.xmake.xmaker]
+# xmake.lua itself selects the toolchain per host platform (see root
+# xmake.lua); no --toolchain= needs to be passed here. tempname is pinned to
+# a persistent, project-relative directory (instead of the default ephemeral
+# temp dir) so repeated builds reuse xmake's incremental build cache.
+tempname = "out/build/xmake-python"
+
+[tool.uv]
+package = true
+link-mode = "copy"
+default-groups = ["dev"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "SIM", # flake8-simplify
+  "RUF", # ruff-specific rules
+]
+fixable = ["ALL"]
+per-file-ignores = { "__init__.py" = ["F401"] }
+
+[tool.ruff.lint.isort]
+known-first-party = ["kosy"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
+[tool.pyright]
+pythonVersion = "3.14"
+typeCheckingMode = "standard"
+
+[tool.ty.environment]
+python-version = "3.14"
+python-platform = "linux"
+
+[tool.ty.analysis]
+allowed-unresolved-imports = [
+  "numba",
+  "numba.*",
+  "cython",
+  "cython.*",
+]
+
+[tool.ty.terminal]
+error-on-warning = true
